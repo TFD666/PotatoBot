@@ -1,6 +1,6 @@
 # PotatoBot
 
-CLI helper for sending a single manual chat message to a YouTube livestream you're watching, as yourself.
+CLI helper for sending a single manual chat message or multiple messages infinitely to a YouTube livestream you're watching, as yourself.
 
 ## Setup
 
