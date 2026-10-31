@@ -1,6 +1,11 @@
 venv/
+.venv/
 __pycache__/
 *.pyc
+.env
+.env.*
 credentials.json
 token.json
 scheduler.lock
+.pytest_cache/
+.claude/

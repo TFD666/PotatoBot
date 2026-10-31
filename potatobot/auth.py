@@ -1,4 +1,6 @@
 """OAuth2 desktop-flow authentication for PotatoBot."""
+import os
+import stat
 from pathlib import Path
 
 from google.auth.transport.requests import Request
@@ -37,5 +39,6 @@ def get_authenticated_service():
             )
             creds = flow.run_local_server(port=0)
         TOKEN_PATH.write_text(creds.to_json())
+        os.chmod(TOKEN_PATH, stat.S_IRUSR | stat.S_IWUSR)  # owner read/write only; best-effort on Windows
 
     return build("youtube", "v3", credentials=creds)

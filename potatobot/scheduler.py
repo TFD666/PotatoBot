@@ -8,7 +8,7 @@ from googleapiclient.errors import HttpError
 from potatobot.youtube_client import get_live_chat_id, send_chat_message
 
 MIN_INTERVAL_SECONDS = 60
-MAX_MESSAGES = 5
+MAX_MESSAGES = 30
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 LOCK_PATH = PROJECT_ROOT / "scheduler.lock"
