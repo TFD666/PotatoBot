@@ -2,6 +2,7 @@
 from googleapiclient.errors import HttpError
 
 from potatobot.auth import get_authenticated_service
+from potatobot.scheduler import MessageScheduler
 from potatobot.youtube_client import (
     extract_video_id,
     get_live_chat_id,
@@ -52,6 +53,12 @@ def main() -> None:
         print(f"Error: {describe_http_error(e)}")
         return
 
+    mode = input("Mode: [1] Send once  [2] Automation mode: ").strip()
+
+    if mode == "2":
+        _run_automation_mode(youtube, video_id, live_chat_id)
+        return
+
     message = input("Chat message to send: ").strip()
     if not message:
         print("Empty message, nothing to send.")
@@ -70,6 +77,43 @@ def main() -> None:
 
     print("Sent. API response:")
     print(response)
+
+
+def _run_automation_mode(youtube, video_id, live_chat_id) -> None:
+    message = input("Message to send repeatedly: ").strip()
+    if not message:
+        print("Empty message, cancelling automation mode.")
+        return
+
+    try:
+        interval = int(input("Interval in seconds (minimum 60): ").strip())
+        count = int(input("Number of messages to send (max 5): ").strip())
+    except ValueError:
+        print("Invalid number entered. Cancelling automation mode.")
+        return
+
+    try:
+        scheduler = MessageScheduler(
+            youtube=youtube,
+            video_id=video_id,
+            live_chat_id=live_chat_id,
+            message=message,
+            interval_seconds=interval,
+            max_messages=count,
+            describe_error=describe_http_error,
+        )
+    except ValueError as e:
+        print(f"Error: {e}")
+        return
+
+    try:
+        scheduler.start()
+    except RuntimeError as e:
+        print(f"Error: {e}")
+        return
+
+    input("Automation running. Press Enter at any time to stop early...\n")
+    scheduler.stop()
 
 
 if __name__ == "__main__":
